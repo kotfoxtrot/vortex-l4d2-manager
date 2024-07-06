@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  vortexl4d2manager:
+    container_name: vortexl4d2manager
+    image: vortexl4d2manager
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 3081:3081
