@@ -1,3 +1,4 @@
+import { LocalizedStringFormatter } from "react-aria";
 
 export type PerkSet = {
     survivorPerk1: string,
@@ -43,4 +44,14 @@ export type PrivilegeStatus = {
 export type User = {
     id: number,
     steamId: string
+}
+
+export type ChatLog = {
+    id: number,
+    steamId: string,
+    text: string,
+    time: string,
+    server: string,
+    team: number,
+    chatTeam: number
 }

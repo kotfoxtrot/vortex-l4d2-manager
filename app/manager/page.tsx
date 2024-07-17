@@ -1,7 +1,7 @@
 'use client'
 import TokenManager from "@/components/manager/tokenManager";
 import UserManager from "@/components/manager/userManager";
-import { Spinner } from "@nextui-org/react";
+import {Spinner } from "@nextui-org/react";
 import { getCookie, hasCookie } from "cookies-next";
 import { useEffect, useState } from "react";
 
