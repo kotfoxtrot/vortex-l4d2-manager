@@ -19,10 +19,17 @@ export default function LogsPage(){
     const [steamId, setSteamId]: [string, any] = useState('');
     const [server, setServer]: [string, any] = useState('');
     const [text, setText]: [string, any] = useState('');
-    const [startTime, setStartTime]: [ZonedDateTime, any] = useState(now('Europe/Moscow').subtract({days:7}));
-    const [endTime, setEndTime]: [ZonedDateTime, any] = useState(now('Europe/Moscow'));
+    const [startTime, setStartTime]: [ZonedDateTime | null, any] = useState(now('Europe/Moscow').subtract({days:7}));
+    const [endTime, setEndTime]: [ZonedDateTime | null, any] = useState(now('Europe/Moscow'));
 
-    let [steamIdTemp, serverTemp, textTemp, startTimeTemp, endTimeTemp] = [steamId, server, text, startTime.add({hours:3}).toAbsoluteString(), endTime.add({hours:3}).toAbsoluteString()];
+    const correctTime = (someTime: ZonedDateTime | null, isStart: boolean = true) : ZonedDateTime => {
+        return someTime || now('Europe/Moscow').subtract({years:(isStart ? 10 : 0)});
+    };
+
+    let [steamIdTemp, serverTemp, textTemp, startTimeTemp, endTimeTemp] = [
+        steamId, server, text, 
+        correctTime(startTime).add({hours:3}).toAbsoluteString(), 
+        correctTime(endTime, false).add({hours:3}).toAbsoluteString()];
     
 
     const updateList = () => {
@@ -36,8 +43,8 @@ export default function LogsPage(){
         steamIdTemp = steamId;
         serverTemp = server;
         textTemp = text;
-        startTimeTemp = startTime.add({hours:3}).toAbsoluteString();
-        endTimeTemp = endTime.add({hours:3}).toAbsoluteString();
+        startTimeTemp = correctTime(startTime).add({hours:3}).toAbsoluteString();
+        endTimeTemp = correctTime(endTime, false).add({hours:3}).toAbsoluteString();
     };
 
     const clearFields = () => {
@@ -123,6 +130,7 @@ export default function LogsPage(){
                     className="h-[70vh]"
                     aria-label="Логи чата"
                     baseRef={scrollRef}
+            
                     bottomContent={
                         (!more) ? null :
                         <div className="flex w-full justify-center"><Spinner ref={loaderRef} size="sm"/></div>
@@ -131,24 +139,23 @@ export default function LogsPage(){
                     <TableHeader>
                         <TableColumn>Steam ID</TableColumn>
                         <TableColumn>Сервер</TableColumn>
-                        <TableColumn>Время</TableColumn>
                         <TableColumn>Команда</TableColumn>
-                        <TableColumn>Командный чат</TableColumn>
                         <TableColumn>Текст</TableColumn>
+                        <TableColumn>Время</TableColumn>
                     </TableHeader>
                     <TableBody
                         items={list.items as ChatLog[] || []}
                         isLoading={loading}
+                        emptyContent="Ничего не найдено :("
                         loadingContent={<Spinner size="lg" label="Загрузка..."/>}
                     >
                         {
                         l => <TableRow key={`${l.id}${l.time}`}>
                             <TableCell className="text-sm lg:text-lg">{l.steamId}</TableCell>
                             <TableCell>{l.server}</TableCell>
-                            <TableCell className="text-center">{l.time.replace('T', ' ')}</TableCell>
-                            <TableCell>{teamToStr(l.team)}</TableCell>
-                            <TableCell><FontAwesomeIcon icon={l.chatTeam ? faCheck : faXmark} size="xl"/></TableCell>
+                            <TableCell>{teamToStr(l.team)} ({l.chatTeam ? "Команде" : "Всем"})</TableCell>
                             <TableCell className="text-wrap">{l.text}</TableCell>
+                            <TableCell className="text-center">{l.time.replace('T', ' ')}</TableCell>
                         </TableRow>
                         }
                     </TableBody>
@@ -157,3 +164,11 @@ export default function LogsPage(){
         </main>
     );
 }
+/*
+<TableCell className="text-sm lg:text-lg">{l.steamId}</TableCell>
+<TableCell>{l.server}</TableCell>
+<TableCell className="text-center">{l.time.replace('T', ' ')}</TableCell>
+<TableCell>{teamToStr(l.team)}</TableCell>
+<TableCell><FontAwesomeIcon icon={l.chatTeam ? faCheck : faXmark} size="xl"/></TableCell>
+<TableCell className="text-wrap">{l.text}</TableCell>
+*/
