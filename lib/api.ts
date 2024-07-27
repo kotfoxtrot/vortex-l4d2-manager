@@ -55,5 +55,6 @@ export const setWelcomePhrase = async (steamId : string, welcomePhrase : string,
 export const setCustomPrefix = async (steamId : string, customPrefix : string, token : string) => 
     await myPost<string>(`privilege/custom_prefix?steam_id=${steamId}&prefix=${customPrefix}`, token);
 
-export const getChatlogs = async (offset: number | string = 0, limit: number | string = 25, text: string = "", steam_id: string = "", server: string = "", start_time: string = "2000-01-01T00:00:00", end_time: string = "2100-01-01T00:00:00") =>
-    await myGet<ChatLog[]>(`logs?text=${text}&steam_id=${steam_id}&server=${server}&offset=${offset}&limit=${limit}&start_time=${start_time}&end_time=${end_time}`);
+export const getChatlogs = async (offset: number | string = 0, limit: number | string = 25, text: string = "", steam_id: string = "", 
+    server: string = "", start_time: string = "2000-01-01T00:00:00", end_time: string = "2100-01-01T00:00:00", nick: string = '') =>
+        await myGet<ChatLog[]>(`logs?text=${text}&steam_id=${steam_id}&server=${server}&offset=${offset}&limit=${limit}&start_time=${start_time}&end_time=${end_time}` + (nick.length != 0 ? `&nickname=${nick}` : ''));

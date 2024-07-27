@@ -49,6 +49,7 @@ export type User = {
 export type ChatLog = {
     id: number,
     steamId: string,
+    nickname: string | null,
     text: string,
     time: string,
     server: string,

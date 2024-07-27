@@ -17,6 +17,7 @@ export default function LogsPage(){
     const [more, setMore]: [boolean, any] = useState(true);
 
     const [steamId, setSteamId]: [string, any] = useState('');
+    const [nick, setNick]: [string, any] = useState('')
     const [server, setServer]: [string, any] = useState('');
     const [text, setText]: [string, any] = useState('');
     const [startTime, setStartTime]: [ZonedDateTime | null, any] = useState(now('Europe/Moscow').subtract({days:7}));
@@ -26,8 +27,8 @@ export default function LogsPage(){
         return someTime || now('Europe/Moscow').subtract({years:(isStart ? 10 : 0)});
     };
 
-    let [steamIdTemp, serverTemp, textTemp, startTimeTemp, endTimeTemp] = [
-        steamId, server, text, 
+    let [steamIdTemp, nickTemp, serverTemp, textTemp, startTimeTemp, endTimeTemp] = [
+        steamId, nick, server, text, 
         correctTime(startTime).add({hours:3}).toAbsoluteString(), 
         correctTime(endTime, false).add({hours:3}).toAbsoluteString()];
     
@@ -41,6 +42,7 @@ export default function LogsPage(){
 
     const setTempFields = () => {
         steamIdTemp = steamId;
+        nickTemp = nick;
         serverTemp = server;
         textTemp = text;
         startTimeTemp = correctTime(startTime).add({hours:3}).toAbsoluteString();
@@ -51,6 +53,7 @@ export default function LogsPage(){
         setSteamId('');
         setServer('');
         setText('');
+        setNick('');
         setStartTime(now('Europe/Moscow').subtract({days:7}));
         setEndTime(now('Europe/Moscow'));
         setTempFields();
@@ -62,7 +65,7 @@ export default function LogsPage(){
             async load({signal, cursor}) {
                 if(cursor) setLoading(false);
                 const res: any = 
-                    await getChatlogs(cursor||0, loadCount, textTemp, steamIdTemp, serverTemp, startTimeTemp, endTimeTemp);
+                    await getChatlogs(cursor||0, loadCount, textTemp, steamIdTemp, serverTemp, startTimeTemp, endTimeTemp, nickTemp);
                 console.log(textTemp);
                 setMore(res != null && res.length == loadCount);
                 return{
@@ -98,6 +101,7 @@ export default function LogsPage(){
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col md:flex-row gap-4">
                     <Input label="Steam ID" size="sm" onValueChange={setSteamId} value={steamId}/>
+                    <Input label="Никнейм" size="sm" onValueChange={setNick} value={nick}/>
                     <Input label="Название сервера" size="sm" onValueChange={setServer} value={server}/>
                     <Input label="Текст" size="sm" onValueChange={setText} value={text}/>
                 </div>
@@ -140,6 +144,7 @@ export default function LogsPage(){
                         <TableColumn>Steam ID</TableColumn>
                         <TableColumn>Сервер</TableColumn>
                         <TableColumn>Команда</TableColumn>
+                        <TableColumn>Никнейм</TableColumn>
                         <TableColumn>Текст</TableColumn>
                         <TableColumn>Время</TableColumn>
                     </TableHeader>
@@ -154,6 +159,7 @@ export default function LogsPage(){
                             <TableCell className="text-sm lg:text-lg">{l.steamId}</TableCell>
                             <TableCell>{l.server}</TableCell>
                             <TableCell>{teamToStr(l.team)} ({l.chatTeam ? "Команде" : "Всем"})</TableCell>
+                            <TableCell>{l.nickname || "Неизвестен"}</TableCell>
                             <TableCell className="text-wrap">{l.text}</TableCell>
                             <TableCell className="text-center">{l.time.replace('T', ' ')}</TableCell>
                         </TableRow>
