@@ -4,7 +4,7 @@ import { getChatlogs } from "@/lib/api";
 import { ChatLog } from "@/lib/types";
 import { DatePicker, Table, TableCell, TableColumn, TableRow, TableBody, TableHeader, Spinner, Input, Button } from "@nextui-org/react";
 import { useInfiniteScroll } from "@nextui-org/use-infinite-scroll";
-import { useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { useAsyncList } from "react-stately";
 import { parseAbsolute, now, ZonedDateTime} from "@internationalized/date";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -95,15 +95,22 @@ export default function LogsPage(){
         }
     }
 
+    const handleInputKeys = (event : any) => {
+        if(event.key === 'Enter')
+        {
+            updateList();
+        }
+    }
+
     //max-h-[92vh]
     return(
         <main className="flex flex-col px-8 md:px-16 lg:px-32 py-4 md:py-8 lg:py-16 overflow-hidden gap-4">
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col md:flex-row gap-4">
-                    <Input label="Steam ID" size="sm" onValueChange={setSteamId} value={steamId}/>
-                    <Input label="Никнейм" size="sm" onValueChange={setNick} value={nick}/>
-                    <Input label="Название сервера" size="sm" onValueChange={setServer} value={server}/>
-                    <Input label="Текст" size="sm" onValueChange={setText} value={text}/>
+                    <Input label="Steam ID" size="sm" onValueChange={setSteamId} value={steamId} onKeyUp={handleInputKeys}/>
+                    <Input label="Никнейм" size="sm" onValueChange={setNick} value={nick} onKeyUp={handleInputKeys}/>
+                    <Input label="Название сервера" size="sm" onValueChange={setServer} value={server} onKeyUp={handleInputKeys}/>
+                    <Input label="Текст" size="sm" onValueChange={setText} value={text} onKeyUp={handleInputKeys}/>
                 </div>
                 <div className="flex flex-col md:flex-row gap-4">
                     <DatePicker
