@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     env: {
-        apiHost: 'http://92.63.178.191:3005'
+        apiHost: 'https://api.vortexl4d4.ru'
     },
-    basePath: null
+    basePath: "/privadmin"
 };
 
 export default nextConfig;
