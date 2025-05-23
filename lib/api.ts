@@ -30,7 +30,7 @@ const myPut = async <Type>(href: string, token: string, settings: any = {method:
 
 
 
-export const checkToken = async (token : string) => await fetch(`${host}/check_token`, {headers: {Authorization: `Bearer ${token}`}})
+export const checkToken = async (token : string) => await fetch(`${host}/auth/check_token`, {headers: {Authorization: `Bearer ${token}`}})
     .then((r) => r.status == 200);
 
 export const getPrivilegeSet = async (steamId: string) => await myGet<PrivilegeSet>(`privilege?steam_id=${steamId}`);
